@@ -1,22 +1,11 @@
 services:
   api:
-    # Constrói a imagem a partir do Dockerfile no diretório atual (.)
     build: .
-    # Mapeia a porta 8000 do seu computador para a porta 8000 do contêiner
     container_name: escola-api
     ports:
       - "8000:8000"
-    # Monta o diretório atual do seu computador no diretório /app do contêiner
-    # Isso permite que as alterações no código (hot-reloading) funcionem
-    # e também garante que o banco de dados SQLite (escola.db) seja salvo no seu computador.
     volumes:
       - .:/app
-    # A seção 'environment' define variáveis de ambiente dentro do contêiner.
-    # É ideal para passar configurações como credenciais de banco de dados ou chaves de API
-    # sem precisar colocá-las diretamente no código.
-    # environment:
-    #   - DATABASE_URL=postgresql://user:password@db_host:5432/mydatabase
-    # Comando para iniciar a aplicação com uvicorn
-    # --host 0.0.0.0 é necessário para que a API seja acessível de fora do contêiner
-    # --reload habilita o recarregamento automático quando o código é alterado
+    environment:
+      DATABASE_URL: sqlite:////app/escola.db
     command: ["uvicorn", "app:app", "--host", "0.0.0.0", "--port", "8000", "--reload"]
