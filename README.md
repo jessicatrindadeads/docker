@@ -100,7 +100,7 @@ Todos os endpoints e seus formatos de entrada e saída estão disponíveis tamb�
 └── docker-compose.yml
 ```
 
-O banco SQLite é criado automaticamente como `escola.db` na primeira execução. Esse arquivo é ignorado pelo Git para evitar o versionamento de dados locais.
+Na execução local, o banco SQLite é criado automaticamente como `escola.db`. Com Docker Compose, os dados ficam no volume persistente `escola_data`. O arquivo local é ignorado pelo Git para evitar o versionamento de dados.
 
 ## Origem
 
