@@ -12,7 +12,8 @@ RUN pip install --no-cache-dir -r requirements.txt
 COPY . .
 
 RUN addgroup -S app && adduser -S app -G app \
-    && chown -R app:app /app
+    && mkdir -p /data \
+    && chown -R app:app /app /data
 
 USER app
 
