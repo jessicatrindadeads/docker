@@ -1,32 +1,36 @@
-from pydantic import BaseModel, EmailStr
 from typing import List
 
+
+from pydantic import BaseModel, ConfigDict, EmailStr
+
+
 class Matricula(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
     aluno_id: int
     curso_id: int
 
-    class Config:
-        from_attributes = True
-        from_attributes = True
 
 Matriculas = List[Matricula]
 
+
 class Aluno(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
     nome: str
     email: EmailStr
     telefone: str
 
-    class Config:
-        from_attributes = True
 
 Alunos = List[Aluno]
 
+
 class Curso(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
     nome: str
     codigo: str
     descricao: str
 
-    class Config:
-        from_attributes = True
 
 Cursos = List[Curso]
