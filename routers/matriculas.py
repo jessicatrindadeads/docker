@@ -1,14 +1,18 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 from typing import List, Dict, Union
-from schemas import Matricula
+from schemas import MatriculaCreate, MatriculaResponse
 from models import Matricula as ModelMatricula, Aluno as ModelAluno, Curso as ModelCurso # Importe os modelos
 from database import get_db
 
 matriculas_router = APIRouter()
 
-@matriculas_router.post("/matriculas", response_model=Matricula, status_code=status.HTTP_201_CREATED)
-def create_matricula(matricula: Matricula, db: Session = Depends(get_db)):
+@matriculas_router.post(
+    "/matriculas",
+    response_model=MatriculaResponse,
+    status_code=status.HTTP_201_CREATED,
+)
+def create_matricula(matricula: MatriculaCreate, db: Session = Depends(get_db)):
     
     db_aluno = db.query(ModelAluno).filter(ModelAluno.id == matricula.aluno_id).first()
     db_curso = db.query(ModelCurso).filter(ModelCurso.id == matricula.curso_id).first()
@@ -16,11 +20,25 @@ def create_matricula(matricula: Matricula, db: Session = Depends(get_db)):
     if db_aluno is None or db_curso is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Aluno ou Curso não encontrado")
 
+    matricula_existente = (
+        db.query(ModelMatricula)
+        .filter(
+            ModelMatricula.aluno_id == matricula.aluno_id,
+            ModelMatricula.curso_id == matricula.curso_id,
+        )
+        .first()
+    )
+    if matricula_existente:
+        raise HTTPException(
+            status_code=status.HTTP_409_CONFLICT,
+            detail="O aluno já está matriculado neste curso",
+        )
+
     db_matricula = ModelMatricula(**matricula.model_dump())
     db.add(db_matricula)
     db.commit()
     db.refresh(db_matricula)
-    return Matricula.model_validate(db_matricula)
+    return db_matricula
 
 
 

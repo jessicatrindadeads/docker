@@ -10,11 +10,11 @@ Base.metadata.create_all(bind=engine)
 app = FastAPI(
     title="API de Gestão Escolar",
     description="""
-        Esta API fornece endpoints para gerenciar alunos, cursos e turmas, em uma instituição de ensino.  
+        Esta API fornece endpoints para gerenciar alunos, cursos e matrículas em uma instituição de ensino.
         
         Permite realizar diferentes operações em cada uma dessas entidades.
     """,
-    version="1.0.0",
+    version="1.1.0",
 )
 
 app.include_router(alunos_router, tags=["alunos"])
